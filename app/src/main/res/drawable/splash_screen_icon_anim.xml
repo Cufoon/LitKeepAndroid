@@ -1,0 +1,63 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/splash_screen_icon">
+    <target
+        android:name="ibg"
+        android:animation="@animator/splash_icon_background" />
+    <target
+        android:name="sqg"
+        android:animation="@animator/splash_square_group" />
+    <target
+        android:name="sq"
+        android:animation="@animator/splash_square" />
+    <target
+        android:name="tang11"
+        android:animation="@animator/splash_icon" />
+    <target
+        android:name="tang12"
+        android:animation="@animator/splash_icon" />
+    <target
+        android:name="tang13"
+        android:animation="@animator/splash_icon" />
+    <target
+        android:name="tang14"
+        android:animation="@animator/splash_icon" />
+    <target
+        android:name="tang15"
+        android:animation="@animator/splash_icon" />
+    <target
+        android:name="tang16"
+        android:animation="@animator/splash_icon" />
+    <target
+        android:name="tang17"
+        android:animation="@animator/splash_icon" />
+    <target
+        android:name="tang1"
+        android:animation="@animator/splash_lollipop" />
+    <target
+        android:name="tang2"
+        android:animation="@animator/splash_lollipop_shadow" />
+    <target
+        android:name="line1"
+        android:animation="@animator/splash_line" />
+    <target
+        android:name="line1g"
+        android:animation="@animator/splash_line_group" />
+    <target
+        android:name="line2"
+        android:animation="@animator/splash_line" />
+    <target
+        android:name="line2g"
+        android:animation="@animator/splash_line_group" />
+    <target
+        android:name="line3"
+        android:animation="@animator/splash_line" />
+    <target
+        android:name="line3g"
+        android:animation="@animator/splash_line_group" />
+    <target
+        android:name="line4"
+        android:animation="@animator/splash_line" />
+    <target
+        android:name="line4g"
+        android:animation="@animator/splash_line_group" />
+</animated-vector>
