@@ -2,7 +2,6 @@ package cufoon.litkeep.android.page.record.add
 
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -14,8 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -28,7 +29,6 @@ import cufoon.litkeep.android.component.TimeItem
 import cufoon.litkeep.android.rememberAppNavController
 import cufoon.litkeep.android.service.BillRecordService
 import cufoon.litkeep.android.service.ReqBillRecordCreate
-import cufoon.litkeep.android.theme.LitColors
 import cufoon.litkeep.android.util.ifNotNullOrElse
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
@@ -36,11 +36,11 @@ import java.time.ZoneOffset
 
 
 suspend fun createRecord(
-    recordType: Int, kindId: String, money: Double, Time: OffsetDateTime, Mark: String
+    recordType: Int, kindId: String, money: Double, time: Long, mark: String
 ): Boolean {
     val (err, data) = BillRecordService.create(
         ReqBillRecordCreate(
-            type = recordType, kindID = kindId, value = money, time = Time, mark = Mark
+            type = recordType, kindID = kindId, value = money, time = time, mark = mark
         )
     )
     err.ifNotNullOrElse({
@@ -63,7 +63,7 @@ fun RecordAddPage() {
     var comment by remember { mutableStateOf("") }
     var money by remember { mutableStateOf("") }
     var kindId by remember { mutableStateOf("") }
-    var recordType by remember { mutableStateOf(0) }
+    var recordType by remember { mutableIntStateOf(0) }
     var date by remember { mutableStateOf(DateItem(2018, 5, 12)) }
     var time by remember { mutableStateOf(TimeItem(13, 14)) }
 
@@ -93,7 +93,7 @@ fun RecordAddPage() {
                     0,
                     0,
                     ZoneOffset.ofHours(8)
-                ), comment
+                ).toInstant().toEpochMilli(), comment
             )
             if (result) {
                 Toast.makeText(context, "添加成功", Toast.LENGTH_SHORT).show()
@@ -104,33 +104,34 @@ fun RecordAddPage() {
         }
     }
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(LitColors.WhiteBackground)
-            .padding(bottom = 8.dp)
-            .windowInsetsPadding(WindowInsets.navigationBars)
-    ) {
-        AddRecordHeader({ recordType }, { recordType = it })
-        KindSelector(Modifier.weight(1f), { kindId }, { kindId = it })
-        Row(
+    Surface {
+        Column(
             Modifier
-                .padding(8.dp, 8.dp, 8.dp, 0.dp)
-                .height(IntrinsicSize.Max),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxSize()
+                .padding(bottom = 8.dp)
+                .windowInsetsPadding(WindowInsets.navigationBars)
         ) {
-            AddRecordDateTime(Modifier.fillMaxHeight()) { d, t ->
-                date = d
-                time = t
-            }
-            AddRecordComment(
-                { comment },
+            AddRecordHeader({ recordType }, { recordType = it })
+            KindSelector(Modifier.weight(1f), { kindId }, { kindId = it })
+            Row(
                 Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp)
-                    .fillMaxHeight()
-            ) { comment = it }
+                    .padding(8.dp, 8.dp, 8.dp, 0.dp)
+                    .height(IntrinsicSize.Max),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                AddRecordDateTime(Modifier.fillMaxHeight()) { d, t ->
+                    date = d
+                    time = t
+                }
+                AddRecordComment(
+                    { comment },
+                    Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp)
+                        .fillMaxHeight()
+                ) { comment = it }
+            }
+            KeyBoardArea({ money }, { money = it }, { onSubmit() }, { onBack() })
         }
-        KeyBoardArea({ money }, { money = it }, { onSubmit() }, { onBack() })
     }
 }

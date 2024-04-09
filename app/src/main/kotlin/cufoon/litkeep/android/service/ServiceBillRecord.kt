@@ -4,32 +4,27 @@ import com.squareup.moshi.JsonClass
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import java.time.OffsetDateTime
 
 
 @JsonClass(generateAdapter = true)
 data class ReqBillRecordQuery(
-    val kindID: String, val startTime: OffsetDateTime, val endTime: OffsetDateTime
+    val kindID: String, val startTime: Long, val endTime: Long
 )
 
 @JsonClass(generateAdapter = true)
 data class ReqBillRecordQueryStatisticDay(
-    val startTime: OffsetDateTime, val endTime: OffsetDateTime
+    val startTime: Long, val endTime: Long, val type: Int?
 )
 
 @JsonClass(generateAdapter = true)
 data class ReqBillRecordPageQuery(
-    val Page: Int
+    val page: Int
 )
 
 @JsonClass(generateAdapter = true)
 data class ReqBillRecordCreate(
-    val kindID: String,
-    val type: Int,
-    val value: Double,
-    val time: OffsetDateTime,
-    val mark: String? = null
+    val kindID: String, val type: Int, val value: Double, val time: Long, val mark: String
 )
 
 @JsonClass(generateAdapter = true)
@@ -39,16 +34,16 @@ data class ReqBillRecordDelete(
 
 @JsonClass(generateAdapter = true)
 data class BillRecord(
-    val ID: Int? = null,
-    val CreatedAt: String? = null,
-    val UpdatedAt: String? = null,
-    val DeletedAt: String? = null,
-    val UserID: String? = null,
-    val Type: Int? = null,
-    val Kind: String? = null,
-    val Value: Double? = null,
-    val Time: OffsetDateTime? = null,
-    val Mark: String? = null
+    val id: Int? = null,
+    val createdAt: String? = null,
+    val updatedAt: String? = null,
+    val deletedAt: String? = null,
+    val userID: String? = null,
+    val type: Int? = null,
+    val kind: String? = null,
+    val value: Double? = null,
+    val time: OffsetDateTime? = null,
+    val mark: String? = null
 )
 
 @JsonClass(generateAdapter = true)
@@ -78,26 +73,26 @@ data class ResBillRecordQueryStatisticDayItem(val day: String, val money: Float)
 data class ResBillRecordQueryStatisticDay(val statistic: List<ResBillRecordQueryStatisticDayItem>?)
 
 interface DefBillRecordService {
-    @POST("Bill")
+    @POST("bill_query")
     suspend fun query(@Body data: ReqBillRecordQuery): Response<HttpResponse<ResBillRecordQuery>>
 
-    @PUT("Bill")
+    @POST("bill_create")
     suspend fun create(@Body data: ReqBillRecordCreate): Response<HttpResponse<ResBillRecordCreate>>
 
-    @POST("BillAndKind")
+    @POST("bill_query_with_kind")
     suspend fun queryAndKind(@Body data: ReqBillRecordQuery): Response<HttpResponse<ResBillRecordQueryAndKind>>
 
-    @POST("BillPageData")
+    @POST("bill_query_page_info")
     suspend fun queryPageData(): Response<HttpResponse<ResBillRecordQueryPageData>>
 
-    @POST("BillPage")
+    @POST("bill_query_page")
     suspend fun queryPage(@Body data: ReqBillRecordPageQuery): Response<HttpResponse<ResBillRecordQuery>>
 
 
-    @POST("BillStatisticDay")
+    @POST("bill_query_statistic_day")
     suspend fun queryStatisticDay(@Body data: ReqBillRecordQueryStatisticDay): Response<HttpResponse<ResBillRecordQueryStatisticDay>>
 
-    @POST("BillDelete")
+    @POST("bill_delete")
     suspend fun delete(@Body data: ReqBillRecordDelete): Response<HttpResponse<ResBillRecordDelete>>
 }
 

@@ -2,7 +2,6 @@ package cufoon.litkeep.android.page.app
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,7 +37,6 @@ import cufoon.litkeep.android.component.TopBarWithBack
 import cufoon.litkeep.android.service.AppService
 import cufoon.litkeep.android.theme.CurveCornerShape
 import cufoon.litkeep.android.theme.ForLiTFont
-import cufoon.litkeep.android.theme.LitColors
 import cufoon.litkeep.android.util.ifNotNullOrElse
 import kotlinx.coroutines.launch
 
@@ -52,7 +50,6 @@ fun AboutPage() {
     Column(
         Modifier
             .fillMaxSize()
-            .background(LitColors.WhiteBackground)
     ) {
         TopBarWithBack({ "关于糖记" }) {}
         Column(

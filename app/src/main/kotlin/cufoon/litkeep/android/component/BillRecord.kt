@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -61,7 +62,9 @@ fun BillRecordLine(
             Dot(color)
             Column(Modifier.padding(horizontal = 6.dp)) {
                 Text(mark())
-                Text(kind(), color = Color(0xFF808080), fontSize = 12.sp)
+                Text(
+                    kind(), color = MaterialTheme.colorScheme.onSecondaryContainer, fontSize = 12.sp
+                )
             }
         }
         Row(Modifier.width(100.dp), horizontalArrangement = Arrangement.End) {

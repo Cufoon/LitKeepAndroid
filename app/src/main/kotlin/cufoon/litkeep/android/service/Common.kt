@@ -1,5 +1,6 @@
 package cufoon.litkeep.android.service
 
+import android.util.Log
 import com.squareup.moshi.JsonClass
 import cufoon.litkeep.android.store.Navigator
 import cufoon.litkeep.android.util.MMKV
@@ -47,6 +48,7 @@ suspend fun <T> request(run: suspend () -> Response<HttpResponse<T>>): Pair<Err?
         }
         return Pair(null, null)
     } catch (e: Exception) {
+        Log.e("lit", e.message ?: "未知错误")
         return Pair(Err(ErrorFromRetrofit, e.message ?: "未知错误"), null)
     }
 }

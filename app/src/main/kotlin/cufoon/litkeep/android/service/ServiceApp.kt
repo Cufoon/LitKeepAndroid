@@ -14,7 +14,7 @@ data class ReqAppCheckUpdate(val now: Int)
 data class ResAppCheckUpdate(val update: Boolean, val url: String)
 
 interface DefAppService {
-    @POST("AndroidApp")
+    @POST("version_android")
     suspend fun checkUpdate(@Body data: ReqAppCheckUpdate): Response<HttpResponse<ResAppCheckUpdate>>
 }
 

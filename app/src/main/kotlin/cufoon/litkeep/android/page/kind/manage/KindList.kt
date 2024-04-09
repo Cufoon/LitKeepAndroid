@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,19 +46,19 @@ fun convertData(origin: List<BillKindParent>?): List<DataItem> {
     origin?.forEach {
         result.add(
             DataItem(
-                it.KindID, 0, BillKind(it.UserID, it.KindID, it.Name, it.Description)
+                it.kindID, 0, BillKind(it.kindID, it.name, it.description)
             )
         )
-        it.Children?.let { children ->
+        it.children?.let { children ->
             if (children.size == 1) {
                 val item = children[0]
-                result.add(DataItem(item.KindID, 1, item))
+                result.add(DataItem(item.kindID, 1, item))
             } else {
                 children.forEachIndexed { index, child ->
                     when (index) {
-                        0 -> result.add(DataItem(child.KindID, 2, child))
-                        children.lastIndex -> result.add(DataItem(child.KindID, 4, child))
-                        else -> result.add(DataItem(child.KindID, 3, child))
+                        0 -> result.add(DataItem(child.kindID, 2, child))
+                        children.lastIndex -> result.add(DataItem(child.kindID, 4, child))
+                        else -> result.add(DataItem(child.kindID, 3, child))
                     }
                 }
             }
@@ -82,7 +83,7 @@ fun RenderListItem(
             25.dp, ambientColor = Color(0x20000000), spotColor = Color(0x10000000)
         )
         .clip(shape)
-        .background(Color.White)
+        .background(MaterialTheme.colorScheme.surfaceContainerLowest)
         .padding(padding)
         .clip(CurveCornerShape(12.dp))
         .clickable {
@@ -90,9 +91,9 @@ fun RenderListItem(
         }
         .padding(6.dp), Arrangement.SpaceBetween) {
         Column {
-            Text(item.Name)
+            Text(item.name)
             Text(
-                item.Description.ifEmpty { "暂时还没有描述" }, color = Color(0xFFC2C2C2)
+                item.description.ifEmpty { "暂时还没有描述" }, color = Color(0xFFC2C2C2)
             )
         }
         Button(onClick = onItemClick, shape = CurveCornerShape(10.dp)) {
@@ -122,7 +123,7 @@ fun RenderItem(dataProvider: () -> DataItem, onItemClick: (BillKind) -> Unit) {
     val data by rememberUpdatedState(dataProvider())
     when (data.type) {
         0 -> Row {
-            Title(Modifier.padding(vertical = 20.dp), { data.origin.Name })
+            Title(Modifier.padding(vertical = 20.dp), { data.origin.name })
         }
 
         1 -> RenderListItem(

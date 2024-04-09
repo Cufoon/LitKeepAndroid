@@ -34,11 +34,11 @@ fun DialogModify(visible: () -> Boolean, closer: () -> Unit, item: () -> BillKin
     val itemToEdit by rememberUpdatedState(item())
 
     var inputKindName by remember(itemToEdit) {
-        mutableStateOf(itemToEdit.Name)
+        mutableStateOf(itemToEdit.name)
     }
 
     var inputKindDescription by remember(itemToEdit) {
-        mutableStateOf(itemToEdit.Description)
+        mutableStateOf(itemToEdit.description)
     }
 
     val context = LocalContext.current
@@ -46,7 +46,7 @@ fun DialogModify(visible: () -> Boolean, closer: () -> Unit, item: () -> BillKin
     suspend fun modifyKind(time: Int) {
         val (err, data) = BillKindService.modify(
             BillKind(
-                itemToEdit.UserID, itemToEdit.KindID, inputKindName, inputKindDescription
+                itemToEdit.kindID, inputKindName, inputKindDescription
             )
         )
         err.ifNotNullOrElse({
@@ -65,7 +65,7 @@ fun DialogModify(visible: () -> Boolean, closer: () -> Unit, item: () -> BillKin
 
     Dialog(visible = visible, optionsProvider = {
         DialogOption(title = "修改分类", onCancel = {
-            inputKindName = itemToEdit.Name
+            inputKindName = itemToEdit.name
             closer()
         }, onConfirm = {
             coroutineScope.launch {

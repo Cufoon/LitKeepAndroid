@@ -20,11 +20,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,10 +61,10 @@ import java.time.OffsetDateTime
 
 
 internal data class DataItem(
-    val Type: Int? = null,
-    val Kind: String? = null,
-    val Value: Double? = null,
-    val Mark: String? = null
+    val type: Int? = null,
+    val kind: String? = null,
+    val value: Double? = null,
+    val mark: String? = null
 )
 
 internal fun fmtTime(t: OffsetDateTime?): String {
@@ -83,23 +86,25 @@ private suspend fun queryRecentWeek(
     val endTimeQuery =
         if (endTime == null) ndt.minusNanos(1) else ndt.minusDays(endTime.toLong()).minusNanos(1)
     val (err, data) = BillRecordService.queryAndKind(
-        ReqBillRecordQuery("", startTimeQuery, endTimeQuery)
+        ReqBillRecordQuery(
+            "", startTimeQuery.toInstant().toEpochMilli(), endTimeQuery.toInstant().toEpochMilli()
+        )
     )
     err.ifNotNullOrElse({
         Log.d("lit", it.info)
     }) {
         data?.let {
-            val kindMap = it.kinds.associateBy({ k -> k.KindID }, { k -> k.Name })
+            val kindMap = it.kinds.associateBy({ k -> k.kindID }, { k -> k.name })
             val fmtList = mutableListOf<DataItem>()
             it.record.forEach { record ->
-                val kn = kindMap[record.Kind]
-                var mark = record.Mark
+                val kn = kindMap[record.kind]
+                var mark = record.mark
                 if (mark.isNullOrEmpty()) {
                     mark = kn
                 }
                 fmtList.add(
                     DataItem(
-                        record.Type, "$kn ${fmtTime(record.Time)}", record.Value, mark
+                        record.type, "$kn ${fmtTime(record.time)}", record.value, mark
                     )
                 )
             }
@@ -112,9 +117,9 @@ private suspend fun queryRecentWeek(
 fun HomePage() {
     val navigator = rememberAppNavController()
     val scrollState = rememberScrollState()
-    var title1position by remember { mutableStateOf(-1) }
-    var title2position by remember { mutableStateOf(-1) }
-    var title3position by remember { mutableStateOf(-1) }
+    var title1position by remember { mutableIntStateOf(-1) }
+    var title2position by remember { mutableIntStateOf(-1) }
+    var title3position by remember { mutableIntStateOf(-1) }
     val density = LocalDensity.current
     val spacing = with(density) {
         18.dp.roundToPx()
@@ -138,9 +143,9 @@ fun HomePage() {
         }
     }
 
-    val alphaAnimate1 by animateFloatAsState(if (shouldSticky1) 0f else 1f)
-    val alphaAnimate2 by animateFloatAsState(if (shouldSticky2) 0f else 1f)
-    val alphaAnimate3 by animateFloatAsState(if (shouldSticky3) 0f else 1f)
+    val alphaAnimate1 by animateFloatAsState(if (shouldSticky1) 0f else 1f, label = "alphaAnimate1")
+    val alphaAnimate2 by animateFloatAsState(if (shouldSticky2) 0f else 1f, label = "alphaAnimate2")
+    val alphaAnimate3 by animateFloatAsState(if (shouldSticky3) 0f else 1f, label = "alphaAnimate3")
 
     val (recordList, setRecordList) = remember {
         mutableStateOf<List<DataItem>>(listOf())
@@ -160,148 +165,150 @@ fun HomePage() {
         queryRecentWeek(OffsetDateTime.now().dayOfMonth - 1, setValue = setRecordList2)
     }
 
-    Column {
-        StatusBarHolder()
-        Box(
-            Modifier.fillMaxSize()
-        ) {
-            Sticky({ shouldSticky1 }) {
-                Title(
-                    Modifier
-                        .background(LitColors.WhiteBackground)
-                        .padding(vertical = 20.dp), { "今日消费" })
-            }
-            Sticky({ shouldSticky2 }) {
-                Title(
-                    Modifier
-                        .background(LitColors.WhiteBackground)
-                        .padding(vertical = 20.dp),
-                    { "此前七天" },
-                    { Color(0xFFFADB5F) })
-            }
-            Sticky({ shouldSticky3 }) {
-                Title(
-                    Modifier
-                        .background(LitColors.WhiteBackground)
-                        .padding(vertical = 20.dp),
-                    { "本月消费" },
-                    { Color(0xFFA3CFFF) })
-            }
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
-                    .padding(bottom = 120.dp)
+    Surface {
+        Column {
+            StatusBarHolder()
+            Box(
+                Modifier.fillMaxSize()
             ) {
-                ContentListWithTitle({ recordList }, {
-                    BillRecordLine(kind = { it.Kind ?: "none" },
-                        mark = { it.Mark ?: "none" },
-                        money = { it.Value },
-                        type = { it.Type ?: 0 },
-                        color = { if (it.Type != 0) LitColors.Expenditure else LitColors.Income })
-                }) {
+                Sticky({ shouldSticky1 }) {
                     Title(
                         Modifier
-                            .alpha(alphaAnimate1)
-                            .onGloballyPositioned {
-                                title1position = it.positionInParent().y.toInt()
-                            }
-                            .onPlaced {
-                                title1position = it.positionInParent().y.toInt()
-                            }
-                            .padding(vertical = 20.dp), { "今日消费" })
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(vertical = 20.dp),
+                        { "今日消费" })
                 }
-                ContentListWithTitle({ recordList1 }, {
-                    BillRecordLine(kind = { it.Kind ?: "none" },
-                        mark = { it.Mark ?: "none" },
-                        money = { it.Value },
-                        type = { it.Type ?: 0 },
-                        color = { if (it.Type != 0) LitColors.Expenditure else LitColors.Income })
-                }) {
-                    Title(Modifier
-                        .alpha(alphaAnimate2)
-                        .onGloballyPositioned {
-                            title2position = it.positionInParent().y.toInt()
-                        }
-                        .onPlaced {
-                            title2position = it.positionInParent().y.toInt()
-                        }
-                        .padding(vertical = 20.dp)
-                        .padding(top = 10.dp),
+                Sticky({ shouldSticky2 }) {
+                    Title(
+                        Modifier
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(vertical = 20.dp),
                         { "此前七天" },
                         { Color(0xFFFADB5F) })
                 }
-                ContentListWithTitle({ recordList2 }, {
-                    BillRecordLine(kind = { it.Kind ?: "none" },
-                        mark = { it.Mark ?: "none" },
-                        money = { it.Value },
-                        type = { it.Type ?: 0 },
-                        color = { if (it.Type != 0) LitColors.Expenditure else LitColors.Income })
-                }) {
-                    Title(Modifier
-                        .alpha(alphaAnimate3)
-                        .onGloballyPositioned {
-                            title3position = it.positionInParent().y.toInt()
-                        }
-                        .onPlaced {
-                            title3position = it.positionInParent().y.toInt()
-                        }
-                        .padding(vertical = 20.dp)
-                        .padding(top = 10.dp),
+                Sticky({ shouldSticky3 }) {
+                    Title(
+                        Modifier
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(vertical = 20.dp),
                         { "本月消费" },
                         { Color(0xFFA3CFFF) })
                 }
-                Row(
+                Column(
                     Modifier
-                        .padding(top = 48.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                        .padding(bottom = 120.dp)
                 ) {
-                    Column(Modifier
-                        .shadow(
-                            25.dp,
-                            ambientColor = Color(0x20000000),
-                            spotColor = Color(0x10000000)
-                        )
-                        .clip(CurveCornerShape(20.dp))
-                        .clickable {
-                            navigator {
-                                navigate(ROUTE_RECORD_MANAGE)
+                    ContentListWithTitle({ recordList }, {
+                        BillRecordLine(kind = { it.kind ?: "none" },
+                            mark = { it.mark ?: "none" },
+                            money = { it.value },
+                            type = { it.type ?: 0 },
+                            color = { if (it.type != 0) LitColors.Expenditure else LitColors.Income })
+                    }) {
+                        Title(
+                            Modifier
+                                .alpha(alphaAnimate1)
+                                .onGloballyPositioned {
+                                    title1position = it.positionInParent().y.toInt()
+                                }
+                                .onPlaced {
+                                    title1position = it.positionInParent().y.toInt()
+                                }
+                                .padding(vertical = 20.dp), { "今日消费" })
+                    }
+                    ContentListWithTitle({ recordList1 }, {
+                        BillRecordLine(kind = { it.kind ?: "none" },
+                            mark = { it.mark ?: "none" },
+                            money = { it.value },
+                            type = { it.type ?: 0 },
+                            color = { if (it.type != 0) LitColors.Expenditure else LitColors.Income })
+                    }) {
+                        Title(Modifier
+                            .alpha(alphaAnimate2)
+                            .onGloballyPositioned {
+                                title2position = it.positionInParent().y.toInt()
                             }
+                            .onPlaced {
+                                title2position = it.positionInParent().y.toInt()
+                            }
+                            .padding(vertical = 20.dp)
+                            .padding(top = 10.dp),
+                            { "此前七天" },
+                            { Color(0xFFFADB5F) })
+                    }
+                    ContentListWithTitle({ recordList2 }, {
+                        BillRecordLine(kind = { it.kind ?: "none" },
+                            mark = { it.mark ?: "none" },
+                            money = { it.value },
+                            type = { it.type ?: 0 },
+                            color = { if (it.type != 0) LitColors.Expenditure else LitColors.Income })
+                    }) {
+                        Title(Modifier
+                            .alpha(alphaAnimate3)
+                            .onGloballyPositioned {
+                                title3position = it.positionInParent().y.toInt()
+                            }
+                            .onPlaced {
+                                title3position = it.positionInParent().y.toInt()
+                            }
+                            .padding(vertical = 20.dp)
+                            .padding(top = 10.dp),
+                            { "本月消费" },
+                            { Color(0xFFA3CFFF) })
+                    }
+                    Row(
+                        Modifier
+                            .padding(top = 48.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Column(Modifier
+                            .shadow(
+                                25.dp,
+                                ambientColor = Color(0x20000000),
+                                spotColor = Color(0x10000000)
+                            )
+                            .clip(CurveCornerShape(20.dp))
+                            .clickable {
+                                navigator {
+                                    navigate(ROUTE_RECORD_MANAGE)
+                                }
+                            }
+                            .padding(8.dp)
+                            .wrapContentSize()) {
+                            Text("全部记录➡", color = Color.Gray)
                         }
-                        .background(Color.White)
-                        .padding(14.dp)
-                        .wrapContentSize()) {
-                        Text("全部记录➡")
                     }
                 }
-            }
-            Row(
-                Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 30.dp, bottom = 30.dp)
-            ) {
-                Button(
-                    onClick = {
-                        navigator {
-                            navigate(ROUTE_RECORD_ADD)
-                        }
-                    },
+                Row(
                     Modifier
-                        .size(56.dp)
-                        .align(Alignment.CenterVertically),
-                    shape = CurveCornerShape(18.dp),
-                    contentPadding = PaddingValues.Absolute(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xEEFF99AD))
+                        .align(Alignment.BottomEnd)
+                        .padding(end = 30.dp, bottom = 30.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.home_add_button),
-                        contentDescription = "add button",
+                    Button(
+                        onClick = {
+                            navigator {
+                                navigate(ROUTE_RECORD_ADD)
+                            }
+                        },
                         Modifier
-                            .size(26.dp)
-                            .padding(),
-                        Color(0xFFFFFFFF)
-                    )
+                            .size(56.dp)
+                            .align(Alignment.CenterVertically),
+                        shape = CurveCornerShape(18.dp),
+                        contentPadding = PaddingValues.Absolute(),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.home_add_button),
+                            contentDescription = "add button",
+                            Modifier
+                                .size(26.dp)
+                                .padding(),
+                            MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
                 }
             }
         }
@@ -322,7 +329,7 @@ private fun <T> ContentListWithTitle(
                 25.dp, ambientColor = Color(0x20000000), spotColor = Color(0x10000000)
             )
             .clip(CurveCornerShape(20.dp))
-            .background(Color(0xFFFFFFFF))
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
     ) {
         Column(Modifier.padding(12.dp)) {
             recordList().ifNotNullOrElse({ rList ->
@@ -350,6 +357,6 @@ private fun EmptyTip() {
         verticalArrangement = Arrangement.Center
     ) {
         AsyncImage(R.drawable.icons8_empty_box_96, contentDescription = null)
-        Text(text = "暂无记录")
+        Text(text = "暂无记录", color = MaterialTheme.colorScheme.onSurface)
     }
 }

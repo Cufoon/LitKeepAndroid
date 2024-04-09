@@ -74,11 +74,11 @@ fun InfiniteListHandler(
 }
 
 private data class DataItem(
-    val Id: Int? = null,
-    val Type: Int? = null,
-    val Kind: String? = null,
-    val Value: Double? = null,
-    val Mark: String? = null
+    val id: Int? = null,
+    val type: Int? = null,
+    val kind: String? = null,
+    val value: Double? = null,
+    val mark: String? = null
 )
 
 private fun fmtTime(t: OffsetDateTime?): String {
@@ -98,14 +98,14 @@ private suspend fun getBillPage(page: Int, kindsMap: Map<String, String>): Mutab
         data?.let {
             val fmtList = mutableListOf<DataItem>()
             it.record.forEach { record ->
-                val kn = kindsMap[record.Kind]
-                var mark = record.Mark
+                val kn = kindsMap[record.kind]
+                var mark = record.mark
                 if (mark.isNullOrEmpty()) {
                     mark = kn
                 }
                 fmtList.add(
                     DataItem(
-                        record.ID, record.Type, "$kn\n${fmtTime(record.Time)}", record.Value, mark
+                        record.id, record.type, "$kn\n${fmtTime(record.time)}", record.value, mark
                     )
                 )
             }
@@ -121,7 +121,7 @@ private suspend fun getBillPageData(): Triple<Err?, Map<String, String>, Int> {
         return Triple(err, mapOf(), 0)
     }) {
         data?.let {
-            val kindMap = it.kinds.associateBy({ k -> k.KindID }, { k -> k.Name })
+            val kindMap = it.kinds.associateBy({ k -> k.kindID }, { k -> k.name })
             return Triple(null, kindMap, it.pageData.totalPages)
         }
     }
@@ -204,11 +204,11 @@ fun RecordManagePage() {
                         Column(
                             Modifier.weight(1f)
                         ) {
-                            BillRecordLine(kind = { userItem.Kind ?: "none" },
-                                mark = { userItem.Mark ?: "none" },
-                                money = { userItem.Value },
-                                type = { userItem.Type ?: 0 },
-                                color = { if (userItem.Type != 0) LitColors.Expenditure else LitColors.Income })
+                            BillRecordLine(kind = { userItem.kind ?: "none" },
+                                mark = { userItem.mark ?: "none" },
+                                money = { userItem.value },
+                                type = { userItem.type ?: 0 },
+                                color = { if (userItem.type != 0) LitColors.Expenditure else LitColors.Income })
                         }
                         Column(
                             Modifier
@@ -216,7 +216,7 @@ fun RecordManagePage() {
                                 .padding(horizontal = 8.dp)
                         ) {
                             Button(onClick = {
-                                idToDelete = userItem.Id
+                                idToDelete = userItem.id
                                 isShowDialog = true
                             }, shape = CurveCornerShape(10.dp)) {
                                 Text("删除", color = Color(0xFFFFFFFF))
@@ -242,11 +242,12 @@ fun RecordManagePage() {
             DialogOption(title = "修改分类", onCancel = {
                 isShowDialog = false
             }) {
+                Log.d("lit", "点击了确定按钮")
                 coroutineScope.launch {
                     idToDelete?.let {
                         val isDeleted = deleteOneRecord(it)
                         if (isDeleted) {
-                            items.removeAll { dataItem -> dataItem.Id == it }
+                            items.removeAll { dataItem -> dataItem.id == it }
                         }
                         Toast.makeText(
                             context, if (isDeleted) "删除成功" else "删除失败", Toast.LENGTH_SHORT

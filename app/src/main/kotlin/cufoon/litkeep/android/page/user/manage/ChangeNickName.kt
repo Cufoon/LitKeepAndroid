@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -87,7 +88,10 @@ fun ChangeNickNamePage() {
                 .padding(18.dp, 4.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = if (vm.userNickName.isEmpty()) "你还没有昵称！" else "你现在的昵称：${vm.userNickName}")
+            Text(
+                text = if (vm.userNickName.isEmpty()) "你还没有昵称！" else "你现在的昵称：${vm.userNickName}",
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
 
         Row(

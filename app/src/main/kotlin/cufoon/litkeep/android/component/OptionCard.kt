@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -57,7 +58,7 @@ fun Option(
             icon?.let {
                 Column(Modifier.padding(end = 5.dp)) { it() }
             }
-            Text(text = name, fontSize = 17.sp)
+            Text(text = name, fontSize = 17.sp, color = MaterialTheme.colorScheme.onBackground)
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             rightContent?.let { it() }
@@ -82,8 +83,7 @@ fun Options(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -
                 25.dp, ambientColor = Color(0x20000000), spotColor = Color(0x10000000)
             )
             .clip(CurveCornerShape(20.dp))
-            .background(Color(0xFFFFFFFF))
-            .padding(6.dp),
-        content = content
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+            .padding(6.dp), content = content
     )
 }

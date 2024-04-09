@@ -37,17 +37,17 @@ data class ResUserChangeNickName(val changed: Boolean)
 data class ResUserChangeIcon(val changed: Boolean)
 
 interface DefUserService {
-    @POST("User")
+    @POST("user_login")
     suspend fun login(@Body data: ReqUserLogin): Response<HttpResponse<ResUserLogin>>
 
-    @GET("UserInfo")
+    @GET("user_info")
     suspend fun getInfo(): Response<HttpResponse<ResGetInfo>>
 
-    @POST("UserInfoNickNameChange")
+    @POST("user_info_change_nickname")
     suspend fun changeNickName(@Body data: ReqUserChangeNickName): Response<HttpResponse<ResUserChangeNickName>>
 
     @Multipart
-    @POST("UserInfoIconChange")
+    @POST("user_info_change_icon")
     suspend fun changeIcon(@Part file: MultipartBody.Part): Response<HttpResponse<ResUserChangeIcon>>
 }
 

@@ -7,6 +7,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -25,7 +26,7 @@ fun Switch(
     items: () -> List<String>, selected: () -> Int, onChanged: (Int) -> Unit, color: () -> Color
 ) {
     Row(
-        Modifier.border(2.dp, color(), CurveCornerShape(16.dp))
+        Modifier.border(2.dp, MaterialTheme.colorScheme.secondary, CurveCornerShape(16.dp))
     ) {
         items().forEachIndexed { index, item ->
             Item(nowAt = selected, idx = { index }, item = { item }, onClick = onChanged, color)
@@ -47,8 +48,12 @@ private fun Item(
         .clickable(interactionSource = interactionSource, indication = null) {
             onClick(idx())
         }
-        .background(if (selected) color() else Color.Transparent)
+        .background(if (selected) MaterialTheme.colorScheme.secondary else Color.Transparent)
         .padding(12.dp, 6.dp)) {
-        Text(item(), fontSize = 18.sp, color = if (selected) Color.White else Color.Black)
+        Text(
+            item(),
+            fontSize = 18.sp,
+            color = if (selected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSecondaryContainer
+        )
     }
 }

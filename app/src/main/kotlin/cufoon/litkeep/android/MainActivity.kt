@@ -7,6 +7,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity(), CoroutineScope by MainScope() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         val rootDir: String = tm.initialize(this)
         println("mmkv root: $rootDir")
         window.setFlags(
@@ -52,7 +54,7 @@ class MainActivity : ComponentActivity(), CoroutineScope by MainScope() {
                 Toast.makeText(context, "${it.code}---${it.info}", Toast.LENGTH_SHORT).show()
             }) {
                 data?.let {
-                    if (it.verified == 0) {
+                    if (it.verified) {
                         viewModel.tokenVerified = true
                     }
                 }

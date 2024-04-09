@@ -3,22 +3,20 @@ package cufoon.litkeep.android.service
 import com.squareup.moshi.JsonClass
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.PATCH
 import retrofit2.http.POST
 
 
 @JsonClass(generateAdapter = true)
 data class BillKind(
-    val UserID: String, val KindID: String, val Name: String, val Description: String
+    val kindID: String, val name: String, val description: String
 )
 
 @JsonClass(generateAdapter = true)
 data class BillKindParent(
-    val UserID: String,
-    val KindID: String,
-    val Name: String,
-    val Description: String,
-    val Children: List<BillKind>?
+    val kindID: String,
+    val name: String,
+    val description: String,
+    val children: List<BillKind>?
 )
 
 @JsonClass(generateAdapter = true)
@@ -28,10 +26,10 @@ data class ResBillKindQuery(val kind: List<BillKindParent>)
 data class ResBillKindModify(val modified: Boolean)
 
 interface DefBillKindService {
-    @POST("Kind")
+    @POST("kind_query")
     suspend fun query(): Response<HttpResponse<ResBillKindQuery>>
 
-    @PATCH("Kind")
+    @POST("kind_update")
     suspend fun modify(@Body data: BillKind): Response<HttpResponse<ResBillKindModify>>
 }
 

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -21,7 +22,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cufoon.litkeep.android.theme.CurveCornerShape
-import cufoon.litkeep.android.theme.LitColors
 
 
 @Composable
@@ -35,7 +35,7 @@ internal fun AddRecordComment(
     Column(
         modifier
             .clip(CurveCornerShape(12.dp))
-            .background(LitColors.LightPink)
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
             .padding(8.dp),
         verticalArrangement = Arrangement.Center
     ) {
@@ -51,7 +51,7 @@ internal fun AddRecordComment(
             decorationBox = { innerTextField ->
                 Box {
                     if (!hasValue) {
-                        Text("添加个备注吧", color = Color.LightGray)
+                        Text("添加个备注吧", color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     innerTextField()
                 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -25,7 +25,6 @@ import cufoon.litkeep.android.component.TimeItem
 import cufoon.litkeep.android.component.rememberDatePickerDialog
 import cufoon.litkeep.android.component.rememberTimePickerDialog
 import cufoon.litkeep.android.theme.CurveCornerShape
-import cufoon.litkeep.android.theme.LitColors
 import java.util.Calendar
 
 
@@ -40,10 +39,11 @@ internal fun AddRecordDateTime(
         timeSetter(selectedDate, selectedTime)
     }
 
+
     Box(
         modifier
             .clip(CurveCornerShape(12.dp))
-            .background(LitColors.LightPink)
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
             .padding(8.dp)
     ) {
         Row(
@@ -58,7 +58,7 @@ internal fun AddRecordDateTime(
             )
         }
         Column(
-            Modifier.background(Color(0x0cFFFFFF)), Arrangement.Center
+            verticalArrangement = Arrangement.Center
         ) {
             Text("日期", fontSize = 16.sp)
             Text("$selectedDate", Modifier.clickable { openDatePickerDialog() })

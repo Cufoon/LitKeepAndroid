@@ -1,6 +1,5 @@
 package cufoon.litkeep.android.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -15,12 +14,13 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,14 +35,12 @@ fun TopBar(
     Row(
         Modifier
             .fillMaxWidth()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
             .windowInsetsPadding(WindowInsets.statusBars)
             .requiredHeight(48.dp)
-            .padding(horizontal = 10.dp),
-        Arrangement.SpaceBetween,
-        Alignment.CenterVertically
+            .padding(horizontal = 10.dp), Arrangement.SpaceBetween, Alignment.CenterVertically
     ) {
-        Text(title(), fontSize = 24.sp, color = Color(0xFF000000))
+        Text(title(), fontSize = 24.sp, color = MaterialTheme.colorScheme.onSecondaryContainer)
         content()
     }
 }
@@ -57,9 +55,9 @@ fun TopBarWithBack(
     Row(
         Modifier
             .fillMaxWidth()
-            .background(Color(0x10000000))
+            .background(MaterialTheme.colorScheme.surfaceContainerLow)
             .padding(bottom = 1.dp)
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
             .windowInsetsPadding(WindowInsets.statusBars)
             .wrapContentHeight()
             .padding(10.dp),
@@ -67,7 +65,7 @@ fun TopBarWithBack(
         Alignment.CenterVertically
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(painterResource(R.drawable.icons8_back_arrow_120),
+            Icon(painterResource(R.drawable.icons8_back_arrow_120),
                 null,
                 Modifier
                     .clickable(interactionSource = interactionSource, indication = null) {
@@ -79,7 +77,7 @@ fun TopBarWithBack(
                     .width(28.dp)
                     .height(28.dp))
             Text(
-                title(), fontSize = 18.sp, color = Color(0xFF000000)
+                title(), fontSize = 18.sp, color = MaterialTheme.colorScheme.onSecondaryContainer
             )
         }
         content?.let {

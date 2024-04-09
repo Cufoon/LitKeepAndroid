@@ -14,7 +14,7 @@ import cufoon.litkeep.android.service.BillKind
 @Composable
 fun BillKindManagePage() {
     var isShowDialog by remember { mutableStateOf(false) }
-    var itemToChange by remember { mutableStateOf(BillKind("", "", "", "")) }
+    var itemToChange by remember { mutableStateOf(BillKind("", "", "")) }
 
     val launchDialog = { it: BillKind ->
         itemToChange = it

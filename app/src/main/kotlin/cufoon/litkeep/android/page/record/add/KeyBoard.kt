@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -31,7 +32,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import cufoon.litkeep.android.R
 import cufoon.litkeep.android.theme.CurveCornerShape
-import cufoon.litkeep.android.theme.LitColors
 import cufoon.litkeep.android.util.Calculator
 
 
@@ -135,7 +135,7 @@ internal fun KeyBoardArea(
                 10.dp, ambientColor = Color(0x20000000), spotColor = Color(0x20000000)
             )
             .clip(CurveCornerShape(13.dp))
-            .background(LitColors.LightPink)
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -196,10 +196,10 @@ private fun AKey(
             .clickable { onClick() }
             .fillMaxWidth()
             .aspectRatio(1.5f)
-            .background(LitColors.LightPink),
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(label(), fontSize = 20.sp)
+        Text(label(), fontSize = 20.sp, color = MaterialTheme.colorScheme.onSurface)
     }
 }

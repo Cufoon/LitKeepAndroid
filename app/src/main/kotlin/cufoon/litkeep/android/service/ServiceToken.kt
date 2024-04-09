@@ -6,10 +6,10 @@ import retrofit2.http.GET
 
 
 @JsonClass(generateAdapter = true)
-data class ResTokenVerify(val verified: Int)
+data class ResTokenVerify(val verified: Boolean)
 
 interface DefServiceToken {
-    @GET("TokenVerify")
+    @GET("token_verify")
     suspend fun verify(): Response<HttpResponse<ResTokenVerify>>
 }
 

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -45,7 +46,8 @@ fun Title(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp, 0.dp, 0.dp, 0.dp),
-            color = Color(0xAF000000),
+//            color = Color(0xAF000000),
+            color = MaterialTheme.colorScheme.onSurface,
             fontSize = 20.sp,
             fontStyle = FontStyle.Normal,
             fontWeight = FontWeight.Bold,

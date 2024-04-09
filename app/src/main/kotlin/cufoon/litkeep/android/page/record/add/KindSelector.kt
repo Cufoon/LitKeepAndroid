@@ -19,11 +19,13 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -42,7 +44,6 @@ import cufoon.litkeep.android.service.BillKind
 import cufoon.litkeep.android.service.BillKindParent
 import cufoon.litkeep.android.service.BillKindService
 import cufoon.litkeep.android.theme.CurveCornerShape
-import cufoon.litkeep.android.theme.LitColors
 import cufoon.litkeep.android.util.ifNotNullOrElse
 
 
@@ -68,7 +69,7 @@ internal fun KindSelector(
         mutableStateOf<List<BillKindParent>>(listOf())
     }
     var selectedSuperItemIdx by remember {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
     val selectedSuperItem by remember(selectedSuperItemIdx, kindList) {
         mutableStateOf(kindList.getOrNull(selectedSuperItemIdx))
@@ -79,7 +80,7 @@ internal fun KindSelector(
         queryKinds(1) {
             kindList = it
             if (selected.isEmpty() && kindList.isNotEmpty()) {
-                kindList[0].Children?.get(0)?.let { it1 -> onSelectKind(it1.KindID) }
+                kindList[0].children?.get(0)?.let { it1 -> onSelectKind(it1.kindID) }
             }
         }
     }
@@ -88,7 +89,7 @@ internal fun KindSelector(
         modifier
             .padding(8.dp, 8.dp, 8.dp, 0.dp)
             .clip(CurveCornerShape(12.dp))
-            .background(LitColors.LightPink)
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
     ) {
         Log.d("lit", Arrangement.Start.spacing.toString())
         val columnNum = with(LocalDensity.current) {
@@ -99,15 +100,15 @@ internal fun KindSelector(
             columns = GridCells.Adaptive(minSize = 80.dp)
         ) {
             kindList.forEachIndexed { idx, kind ->
-                item(kind.KindID) {
+                item(kind.kindID) {
                     AKindSuper({ idx }, { selectedSuperItemIdx }, {
                         selectedSuperItemIdx = idx
-                        if (kind.Children.isNullOrEmpty()) {
-                            onSelectKind(kind.KindID)
+                        if (kind.children.isNullOrEmpty()) {
+                            onSelectKind(kind.kindID)
                         } else {
-                            onSelectKind(kind.Children[0].KindID)
+                            onSelectKind(kind.children[0].kindID)
                         }
-                    }, { kind.Name })
+                    }, { kind.name })
                 }
                 if ((idx > 0 && (idx + 1) % columnNum == 0) || idx >= kindList.lastIndex) {
                     item(span = { GridItemSpan(columnNum) }) {
@@ -155,7 +156,11 @@ private fun AKindSuper(
                 .size(24.dp)
                 .background(if (isSelected) Color(0xFFE0909D) else Color.Transparent)
         )
-        Text(name(), fontSize = 14.sp, color = if (isSelected) Color(0xFFE0909D) else Color.Black)
+        Text(
+            name(),
+            fontSize = 14.sp,
+            color = if (isSelected) Color(0xFFE0909D) else MaterialTheme.colorScheme.onSurface
+        )
     }
 }
 
@@ -168,7 +173,7 @@ private fun AKindSub(
 ) {
     val item by rememberUpdatedState(itemProvider())
     val isSelected by remember {
-        derivedStateOf { selectedProvider() == item.KindID }
+        derivedStateOf { selectedProvider() == item.kindID }
     }
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -176,12 +181,14 @@ private fun AKindSub(
         modifier
             .clip(CurveCornerShape(12.dp))
             .clickable(interactionSource = interactionSource, indication = null) {
-                onClick(item.KindID)
+                onClick(item.kindID)
             }
             .width(80.dp)
-            .background(if (isSelected) Color(0xFFE0909D) else Color(0xFFE7E7E7))
+            .background(
+                if (isSelected) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.surfaceContainerLowest
+            )
             .padding(8.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-        Text(item.Name)
+        Text(item.name, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 
@@ -203,7 +210,7 @@ private fun KindChildren(
         derivedStateOf { selectedIdx in rangeStart..rangeEnd }
     }
 
-    if (onMyStage && superItem?.Children?.isNotEmpty() == true) {
+    if (onMyStage && superItem?.children?.isNotEmpty() == true) {
         BoxWithConstraints(
             Modifier
                 .fillMaxWidth()
@@ -213,13 +220,13 @@ private fun KindChildren(
                     25.dp, ambientColor = Color(0x20000000), spotColor = Color(0x10000000)
                 )
                 .clip(CurveCornerShape(16.dp))
-                .background(Color(0xFFF5F5F5))
+                .background(MaterialTheme.colorScheme.surfaceContainer)
                 .padding(8.dp)
         ) {
             val columnNum = with(LocalDensity.current) {
                 maxOf(constraints.maxWidth / 80.dp.roundToPx(), 1)
             }
-            superItem?.Children?.let {
+            superItem?.children?.let {
                 // https://blog.csdn.net/qq_41437512/article/details/128243628
                 val rowNum = it.lastIndex / columnNum + 1
                 Column(Modifier.fillMaxWidth()) {

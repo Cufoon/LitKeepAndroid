@@ -1,3 +1,16 @@
+import java.io.FileInputStream
+import java.util.Properties
+
+/**
+ * storeFile=***
+ * storePassword=***
+ * keyAlias=***
+ * keyPassword=***
+ */
+val keystorePropertiesFile: File = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -5,7 +18,7 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
-val CufoonApp by extra("Lin")
+val cufoonApp by extra("Lin")
 val composeVersion = rootProject.extra["composeVersion"] as String
 
 android {
@@ -17,7 +30,7 @@ android {
         applicationId = "cufoon.litkeep.android"
         minSdk = 31
         targetSdk = 34
-        versionCode = 30000001
+        versionCode = 28990001
         versionName = "1.0.0"
 
         multiDexEnabled = true
@@ -26,16 +39,16 @@ android {
 
     signingConfigs {
         getByName("debug") {
-            storeFile = file("../keystore/xxx.jks")
-            storePassword = "xxx"
-            keyAlias = "xxx"
-            keyPassword = "xxx"
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
         }
         create("release") {
-            storeFile = file("../keystore/xxx.jks")
-            storePassword = "xxx"
-            keyAlias = "xxx"
-            keyPassword = "xxx"
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
         }
     }
 
@@ -63,14 +76,16 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
+
     }
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
 
     packaging {
@@ -106,53 +121,50 @@ dependencies {
     // implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
     // kotlin
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
 
     // coil
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     // okhttp
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     // retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
     // moshi
-    implementation("com.squareup.moshi:moshi:1.15.0")
-    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
+    implementation("com.squareup.moshi:moshi:1.15.1")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.1")
 
     // vico
-    implementation("com.patrykandpatrick.vico:core:1.13.1")
-    implementation("com.patrykandpatrick.vico:compose:1.13.1")
-    implementation("com.patrykandpatrick.vico:compose-m3:1.13.1")
+    implementation("com.patrykandpatrick.vico:core:1.14.0")
+    implementation("com.patrykandpatrick.vico:compose:1.14.0")
+    implementation("com.patrykandpatrick.vico:compose-m3:1.14.0")
 
     // mmkv
-    implementation("com.tencent:mmkv-shared:1.3.2")
-
-    // google accompanist
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
+    implementation("com.tencent:mmkv-shared:1.3.4")
 
     // material3
-    implementation("androidx.compose.material3:material3:1.1.2")
-    implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
+    implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
 
     // compose
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("androidx.activity:activity-compose:1.8.1")
-    implementation("androidx.navigation:navigation-compose:2.7.5")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
     // test
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.5")
 
     // debug
-    debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.5")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.5")
 }

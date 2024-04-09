@@ -3,9 +3,11 @@ package cufoon.litkeep.android.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import androidx.compose.ui.platform.LocalContext
 
 private val lightColors = lightColorScheme(
     primary = LightColorPrimary,
@@ -54,37 +56,39 @@ private val darkColors = darkColorScheme(
     onTertiary = DarkColorTertiaryOn,
     tertiaryContainer = DarkColorTertiaryContainer,
     onTertiaryContainer = DarkColorTertiaryContainerOn,
-    error = DarkColorError,
-    onError = DarkColorErrorOn,
-    errorContainer = DarkColorErrorContainer,
-    onErrorContainer = DarkColorErrorContainerOn,
     background = DarkColorBackground,
     onBackground = DarkColorBackgroundOn,
     surface = DarkColorSurface,
     onSurface = DarkColorSurfaceOn,
     surfaceVariant = DarkColorSurfaceVariant,
     onSurfaceVariant = DarkColorSurfaceVariantOn,
+    surfaceTint = DarkColorSurfaceTint,
     inverseSurface = DarkColorSurfaceInverse,
     inverseOnSurface = DarkColorSurfaceInverseOn,
-    surfaceTint = DarkColorSurfaceTint,
+    error = DarkColorError,
+    onError = DarkColorErrorOn,
+    errorContainer = DarkColorErrorContainer,
+    onErrorContainer = DarkColorErrorContainerOn,
     outline = DarkColorOutline,
     outlineVariant = DarkColorOutlineVariant,
     scrim = DarkColorScrim,
+    surfaceBright = DarkColorSurface,
+    surfaceContainer = DarkColorSurface,
+    surfaceContainerHigh = DarkColorSurface,
+    surfaceContainerHighest = DarkColorSurface,
+    surfaceContainerLow = DarkColorSurface,
+    surfaceContainerLowest = DarkColorSurface,
+    surfaceDim = DarkColorSurface
 )
-
-//val dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-
 
 @Composable
 fun LitKeepTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor(LitColors.WhiteBackground)
-
+    val context = LocalContext.current
     val colorScheme = when {
-//        dynamicColor && darkTheme -> dynamicDarkColorScheme(LocalContext.current)
-//        dynamicColor && !darkTheme -> dynamicLightColorScheme(LocalContext.current)
-        darkTheme -> darkColors
-        else -> lightColors
+        darkTheme -> dynamicDarkColorScheme(context)
+        else -> dynamicLightColorScheme(context)
+//        darkTheme -> darkColors
+//        else -> lightColors
     }
 
     MaterialTheme(

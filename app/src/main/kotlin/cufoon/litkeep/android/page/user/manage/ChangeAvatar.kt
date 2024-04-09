@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.scale
@@ -40,7 +40,6 @@ import cufoon.litkeep.android.rememberAppViewModel
 import cufoon.litkeep.android.service.UserService
 import cufoon.litkeep.android.store.MainViewModel
 import cufoon.litkeep.android.theme.CurveCornerShape
-import cufoon.litkeep.android.theme.LitColors
 import cufoon.litkeep.android.util.ifNotNullOrElse
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
@@ -120,9 +119,14 @@ fun ChangeAvatarPage() {
                     .clickable {
                         launcher.launch("image/*")
                     }
-                    .background(LitColors.LightPink),
+                    .background(MaterialTheme.colorScheme.secondary),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically) { Text("选择一张图片") }
+                verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "选择一张图片",
+                    color = MaterialTheme.colorScheme.onSecondary
+                )
+            }
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -146,11 +150,11 @@ fun ChangeAvatarPage() {
                             }
                         }
                     }
-                    .background(LitColors.Pink),
+                    .background(MaterialTheme.colorScheme.primary),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    "确认更改头像", color = Color.White
+                    "确认更改头像", color = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
