@@ -18,8 +18,6 @@ val okHttpClient = OkHttpClient.Builder().addInterceptor {
     )
 }.build()
 
-const val LITKEEP_BACKEND_URL = "https://xxx.yyy/"
-
 val retrofitJSON: Retrofit =
     Retrofit.Builder().baseUrl(LITKEEP_BACKEND_URL).addConverterFactory(moshiConverter).build()
 
